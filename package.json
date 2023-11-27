@@ -1,0 +1,21 @@
+{
+  "name": "ai-browser",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "electron": "^27.0.1",
+    "jimp": "^0.22.10",
+    "node-fetch": "^3.3.2",
+    "openai": "^4.19.0",
+    "puppeteer": "^21.4.0",
+    "puppeteer-extra": "^3.3.6",
+    "puppeteer-extra-plugin-stealth": "^2.11.2",
+    "sharp": "^0.32.6"
+  }
+}
