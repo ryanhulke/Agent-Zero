@@ -1,0 +1,34 @@
+// pseudocode for an algorithm that wouldn't rely on set marks
+
+end_task = input("how can I help?")
+
+prompt = "categorize this input as a task to be completed on a computer or not - input: " + end_task
+catagory = send_to_llm(prompt)
+if (category != "computer task"):
+	prompt = "if it makes sense to, reword this to be a task completed on a computer - input: " + end_task
+	end_task = send_to_llm(prompt)
+	if (end_task == "not a task"):
+		print("invalid request")
+		return
+
+prompt = "create a general step by step plan for how to navigate the web to accomplish this task: " + end_task
+plan = send_to_llm(prompt)
+
+LOOP: 
+
+	screenshot()
+
+	prompt = "create a general step by step plan for how to navigate the web to accomplish this task: " + end_task
+	plan = send_to_llm(prompt)
+
+	element_descriptions = ""
+	for (element in interactable_elements):
+		context = "tagName: " + element.tagName + ", styles: " + element.styles + ", textContent: " + element.textContent
+		prompt = "describe this html element and what it might do under the given context: " + context
+		response = index + ". " + send_to_llm(prompt)
+		element_descriptions = element_descriptions + "\n" + response
+	updated_plan = send_to_llm("if necessary, update the plan now that you know the interactable elements on the page - plan: " + plan + "\n" + element_descriptions
+	prompt = end_task + element_descriptions
+	response = send_to_llm(prompt, screenshot)
+	action = parse(response)
+	action()

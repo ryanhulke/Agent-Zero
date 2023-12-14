@@ -1,0 +1,19 @@
+{
+    "type": "function", 
+    "function": {
+        "name": "click",
+        "description": "click on an element on the page",
+        "parameters": {
+        "type": "object",
+        "properties": {
+            "element_id": {
+            "type": "string",
+            "description": "the id associated with the element to be clicked"
+            }
+        },
+        "required": [
+            "element_id"
+        ]
+        }
+    }
+}

@@ -1,0 +1,24 @@
+{
+    "type": "function", 
+    "function": {
+        "name": "type",
+        "description": "Get hotel reservation information based on the reservation id",
+        "parameters": {
+        "type": "object",
+        "properties": {
+            "element_id": {
+            "type": "number",
+            "description": "the id associated with the element to be typed into"
+            },
+            "text": {
+                "type": "string",
+                "description": "the text to be typed"
+            }
+        },
+        "required": [
+            "element_id",
+            "text"
+        ]
+        }
+    }
+}
