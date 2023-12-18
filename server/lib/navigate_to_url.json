@@ -1,0 +1,19 @@
+{   
+    "type": "function",
+    "function": {
+        "name": "navigate_to_url",
+        "description": "go to a given website by url",
+        "parameters": {
+        "type": "object",
+        "properties": {
+            "url": {
+            "type": "string",
+            "description": "the url to navigate to"
+            }
+        },
+        "required": [
+            "url"
+        ]
+        }
+    }
+}

@@ -1,0 +1,19 @@
+{   
+    "type": "function",
+    "function": {
+        "name": "ask_user",
+        "description": "ask the user for their input",
+        "parameters": {
+        "type": "object",
+        "properties": {
+            "prompt": {
+            "type": "string",
+            "description": "the question to ask the user"
+            }
+        },
+        "required": [
+            "prompt"
+        ]
+        }
+    }
+}

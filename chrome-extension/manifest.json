@@ -1,0 +1,35 @@
+{
+    "name": "Zero",
+    "version": "0.1.0",
+    "description": "Browsing the web for you",
+    "permissions": ["storage", "tabs", "cookies"],
+    "host_permissions": [
+        "http://*/*",
+        "https://*/*"
+    ],
+    "background": {
+      "service_worker": "background.js"
+    },
+    "content_scripts": [
+      {
+        "matches": ["<all_urls>"],
+        "js": ["contentScript.js"]
+      }
+    ],
+    "web_accessible_resources": [
+      {
+        "resources": [
+          
+        ],
+        "matches": []
+      }
+    ],
+    "action": {
+      "default_icon": {
+        
+      },
+      "default_title": "Zero",
+      "default_popup": "popup.html"
+    },
+    "manifest_version": 3
+  }

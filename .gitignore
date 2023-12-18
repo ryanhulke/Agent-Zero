@@ -1,7 +1,2 @@
-node_modules/
-screenshot.jpg
 .env
-package-lock.json
-package.json
-requirements.txt
-testing/
+reference-code/
