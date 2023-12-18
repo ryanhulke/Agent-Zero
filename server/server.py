@@ -15,6 +15,8 @@ async def handle_request(request):
         # if request is an initial submission from web app
         if (req_type == 'task'):
             prompt = request_data.get('messages')[0].get('content')[0].get('text')
+
+            # checks to see if the request is a computer task to be completed (needs to open a tab)
             is_task = await validate_task(prompt)
 
             # if the request is a task (needs to open a tab)
