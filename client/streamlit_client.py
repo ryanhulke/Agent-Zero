@@ -25,7 +25,7 @@ if prompt := st.chat_input():
 
     st.session_state.messages.append({"role": "user", "content": prompt})
     st.chat_message("user").write(prompt)
-    response = requests.post("http://localhost:8000", json={
+    response = requests.post("http://localhost:8000/api", json={
         "type": "task",
         "messages": st.session_state.messages
     }).json()

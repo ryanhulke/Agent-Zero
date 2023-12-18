@@ -36,6 +36,7 @@ async def handle_request(request):
             action = await decide_next_action(prompt, plan)
             return web.json_response(action)            
         else:
+            print("invalid request type")
             return web.Response(status=500)
         
     except Exception as e:
