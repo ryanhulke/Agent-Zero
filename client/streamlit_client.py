@@ -27,10 +27,10 @@ if prompt := st.chat_input():
                 "content": "Opening a new tab..."
             })
             st.chat_message("assistant").write("Opening a new tab...")
-            # open new tab here
+            # tell chrome extension to open new tab here
             
         
-        # send function to chrome extension here
+        # send action function to chrome extension here
 
         msg = {
             "role": "assistant", 
