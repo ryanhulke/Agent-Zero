@@ -39,8 +39,9 @@ async def handle_request(request):
             prompt = messages[-1].get('content')[0].get('text')
             base64_image =request_data.get('image')
             id = request_data.get('id')
+            elements = request_data.get('elements')
 
-            action = threads[id].get_action(prompt, base64_image)
+            action = threads[id].get_action(prompt, base64_image, elements)
 
             return web.json_response(action)            
         else:
