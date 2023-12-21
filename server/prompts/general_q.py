@@ -1,24 +1,19 @@
 from openai import OpenAI
 
-async def general_q(prompt):
+def general_q(msgs):
     model = OpenAI()
-    system_prompt = """You are a helpful AI named Zero that will answer the user's question based on the given prompt.\n
-    """
+    system_prompt = """You are a helpful AI named Zero"""
     messages = [{
             "role": "system",
             "content": [{
                 "type": "text",
                 "text": system_prompt
+            }]
         }]
-        },
-        {
-            "role": "user",
-            "content": [{
-                "type": "text",
-                "text": prompt
-                }]
-        }
-        ]
-    response = await model.chat.completions.create(model="gpt-4-1106-preview", messages=messages)
+    
+    for msg in msgs:
+        messages.append(msg)
+        
+    response = model.chat.completions.create(model="gpt-4-1106-preview", messages=messages)
     msg = response.choices[0].message
     return msg

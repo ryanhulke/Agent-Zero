@@ -1,6 +1,6 @@
 from openai import OpenAI
 
-async def create_plan(task):
+def create_plan(task):
     model = OpenAI()
     system_prompt = """You are a helpful AI that will create an initial general step-by-step plan to complete a given computer task.\n
     At each stage, you are able to take 1 of 5 actions: click, type, search, and navigate_to_url, and ask_user.\n
@@ -36,7 +36,7 @@ async def create_plan(task):
                 }]
         }
         ]
-    response = await model.chat.completions.create(model="gpt-4-1106-preview", messages=messages)
+    response = model.chat.completions.create(model="gpt-4-1106-preview", messages=messages)
     plan = response.choices[0].message.content
     return plan
     

@@ -39,7 +39,7 @@ async def update_plan(task, base64_image):
             }]
         }
         ]
-    response = await model.chat.completions.create(model="gpt-4-1106-preview", messages=messages)
+    response = model.chat.completions.create(model="gpt-4-vision-preview", messages=messages)
     plan = response.choices[0].message.content
     return plan
     

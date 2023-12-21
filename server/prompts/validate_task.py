@@ -1,6 +1,6 @@
 from openai import OpenAI
 
-async def validate_task(task):
+def validate_task(task):
     model = OpenAI()
     system_prompt = """You are a helpful AI that will decide whether a given prompt is a 
      task that can be completed on a browser or not. You will be given the prompt and you are to return
@@ -36,8 +36,7 @@ async def validate_task(task):
                 }]
         }
             ]
-    response = await model.chat.completions.create(model="gpt-3.5-turbo-1106", messages=messages)
+    response = model.chat.completions.create(model="gpt-4-1106-preview", messages=messages)
     bool_response = response.choices[0].message.content
-    print(bool_response)
+    print("bool: "+ bool_response)
     return response.choices[0].message.content == "True"
-
