@@ -1,6 +1,7 @@
 from openai import OpenAI
 from prompts.create_plan import create_plan
 from prompts.update_plan import update_plan
+from format.format_output import format_output
 import uuid
 import json
 import os
@@ -12,13 +13,11 @@ class Thread:
     default_elements = ""
 
     # load all tools from lib folder
-    tool_files = [item for item in os.listdir("./lib") if os.path.isfile(os.path.join("./lib", item))]
+    tool_files = [item for item in os.listdir("./lib")]
     tools = []
     for tool_file in tool_files:
-        if ".json" in tool_file:
-            with open(f"./lib/{tool_file}", "r") as f:
-                tools.append(json.loads(f.read()))
-
+        with open(f"./lib/{tool_file}", "r") as f:
+            tools.append(json.loads(f.read()))
 
     model = OpenAI()
 
@@ -32,9 +31,12 @@ class Thread:
             "role": "system",
             "content": [{
                     "type": "text",
-                    "text": """You are a helpful AI that will decide the next action to take based on
-                     the task, the given interactable elements, and the plan. You are able to take 1 of 5
-                     actions: click, type, search, and navigate_to_url, and ask_user.\n
+                    "text": """You are a Self-operating browser. You use the same operating system as a human.
+                    You can go to websites, click on buttons, type, etc. to do things like
+                    research, posting on social media, and online shopping.
+                     Your goal is to take the best next action based on
+                     the task, the current interactable elements on the page, and the current plan to complete the task. 
+                     You are always to call one of your functions to take an action.
         """
                 }]
         }
@@ -56,18 +58,21 @@ class Thread:
                 }
             ]
         })
-        if (image_url != None):
-            self.messages[-1]["content"].append({
-                "type": "image_url",
-                "image_url": {
-                    "url": image_url
-                }
-            })
         
         response = Thread.model.chat.completions.create(
             model="gpt-4-1106-preview",
-            messages=self.messages
+            messages=self.messages,
+            tools=Thread.tools,
         )
-        response = response.choices[0].message.content
+
+        # formats from object to dictionary
+        response = format_output(response.choices[0].message)
+
+        # if this is the first msg in the thread, then this initiate_task tells client to open a tab
+        if (image_url == None):
+            response["initiate_task"] = True
+        else:
+            response["initiate_task"] = False
+
         print(response)    
         return response

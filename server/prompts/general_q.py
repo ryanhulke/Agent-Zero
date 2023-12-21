@@ -15,5 +15,5 @@ def general_q(msgs):
         messages.append(msg)
         
     response = model.chat.completions.create(model="gpt-4-1106-preview", messages=messages)
-    msg = response.choices[0].message
+    msg = response.choices[0].message.__dict__
     return msg

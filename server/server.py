@@ -1,7 +1,7 @@
 from aiohttp import web
 from prompts.validate_task import validate_task
 from prompts.general_q import general_q
-from format_messages import format_messages
+from format.format_messages import format_messages
 from Thread import Thread
 
 
@@ -32,7 +32,6 @@ async def handle_request(request):
             # if the request is a general question/prompt (doesn't need to open a tab)
             else:
                 response = general_q(messages)
-                response = response.__dict__
                 return web.json_response(response)
             
         # if the request is from an update from the chrome extension's browser tab

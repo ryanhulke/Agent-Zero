@@ -2,7 +2,7 @@
     "type": "function",
     "function": {
         "name": "ask_user",
-        "description": "ask the user for their input",
+        "description": "Interupt the workflow of actions to ask a user a question. This should only be used when you are stuck on a page, or if you absolutely need clarification on the task.",
         "parameters": {
         "type": "object",
         "properties": {

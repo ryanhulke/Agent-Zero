@@ -20,10 +20,28 @@ if prompt := st.chat_input():
         "messages": st.session_state.messages
     }).json()
 
-    print(response)
-    msg = response
-  
-    st.session_state.messages.append(response)
+    if (response["type"] == "function"):
+        if (response["initiate_task"]):
+            st.session_state.messages.append({
+                "role": "assistant", 
+                "content": "Opening a new tab..."
+            })
+            st.chat_message("assistant").write("Opening a new tab...")
+            # open new tab here
+            
+        
+        # send function to chrome extension here
 
-    print(msg["tool_calls"])   
+        msg = {
+            "role": "assistant", 
+            "content": response["function"]["name"] + " " + response["function"]["arguments"]
+        }
+    else: 
+        msg = {
+            "role": "assistant", 
+            "content": response["content"]
+        }
+
+    st.session_state.messages.append(msg)
+
     st.chat_message("assistant").write(msg["content"])
