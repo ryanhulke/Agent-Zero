@@ -2,7 +2,7 @@
     "type": "function",
     "function": {
         "name": "ask_user",
-        "description": "Interupt the workflow of actions to ask a user a question. This should only be used when you are stuck on a page, or if you absolutely need clarification on the task.",
+        "description": "Interupt the workflow of actions to ask a user a question. This should only be used when you are stuck on a page, or if you absolutely need clarification on the task. Assume you are already logged in to everything unless you can see that you for sure are not.",
         "parameters": {
         "type": "object",
         "properties": {
