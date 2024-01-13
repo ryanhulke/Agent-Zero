@@ -1,0 +1,14 @@
+{
+    "type": "function", 
+    "function": {
+        "name": "done",
+        "description": "The task has been completed, and no further action is needed.",
+        "parameters": {
+        "type": "object",
+        "properties": {
+        },
+        "required": [
+        ]
+        }
+    }
+}

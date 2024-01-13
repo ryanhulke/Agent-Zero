@@ -2,18 +2,21 @@
     "name": "Zero",
     "version": "0.1.0",
     "description": "Browsing the web for you",
-    "permissions": ["storage", "tabs", "cookies"],
+    "permissions": ["activeTab", "tabs", "scripting",  "<all_urls>"],
     "host_permissions": [
-        "http://*/*",
-        "https://*/*"
+        "*://*/*"
     ],
     "background": {
       "service_worker": "background.js"
     },
     "content_scripts": [
       {
-        "matches": ["<all_urls>"],
+        "matches": ["http://localhost:5000/*"],
         "js": ["contentScript.js"]
+      },
+      {
+        "matches": ["<all_urls>"],
+        "js": ["html2canvas.min.js", "actionAndGetElements.js"]
       }
     ],
     "web_accessible_resources": [
@@ -31,5 +34,8 @@
       "default_title": "Zero",
       "default_popup": "popup.html"
     },
-    "manifest_version": 3
+    "manifest_version": 3,
+    "externally_connectable": {
+      "matches": ["localhost:5000"]
+    }
   }

@@ -10,7 +10,7 @@ def validate_task(task):
     ASSISTANT: "True"\n\n
     USER: "What is 5 times 5?"\n
     ASSISTANT: "False"\n\n
-    USER: "Find 10 candidates for a software engineering position on my LinkedIn, and send them each a message."\nWhat is the score of the Lakers game?"\n
+    USER: "Find 10 candidates for a software engineering position on my LinkedIn, and send them each a message."\n
     ASSISTANT: "True"\n\n
     USER: "Wslfslvasldkjf"\n
     ASSISTANT: "False"\n\n
@@ -38,5 +38,5 @@ def validate_task(task):
             ]
     response = model.chat.completions.create(model="gpt-4-1106-preview", messages=messages)
     bool_response = response.choices[0].message.content
-    print("bool: "+ bool_response)
-    return response.choices[0].message.content == "True"
+    print("is a task: "+ bool_response)
+    return (bool_response == "True" or bool_response == "\"True\"")

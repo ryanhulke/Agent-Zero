@@ -1,0 +1,111 @@
+.chat-container {
+    display: flex;
+    flex-direction: column;
+    margin: auto auto;
+    height: calc(100vh - 16px);
+  }
+  body {
+    background-color: #222;
+    font-family: Arial;
+    font-size: 12pt;
+    color: #f1f1f1;
+  }
+  #messages {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    overflow-y: scroll;
+    max-height: 85vh;
+    flex-grow: 1;
+  }
+#messages::-webkit-scrollbar {
+    width: 10px; /* Adjust the width of the scrollbar */
+}
+
+#messages::-webkit-scrollbar-track {
+    background: #333; /* Color of the scrollbar track */
+}
+
+#messages::-webkit-scrollbar-thumb {
+    background: #555; /* Color of the scrollbar thumb */
+    border-radius: 5px; /* Rounded corners for the thumb */
+}
+
+#messages::-webkit-scrollbar-thumb:hover {
+    background: #777; /* Color of the thumb on hover */
+}
+
+/* For Firefox */
+#messages {
+    scrollbar-width: thin; /* 'auto' or 'thin' */
+    scrollbar-color: #555 #333; /* thumb and track color */
+}
+  .enter-message {
+    color:#f1f1f1;
+    position: relative;
+    margin-top: 1%;
+    margin-bottom: 2%;
+    margin-left: 20%;
+    margin-right: 20%;
+  }
+  #text {
+    width: 92%;
+    height: 40px;
+    padding: 5px 5px;
+    box-sizing: border-box;
+    border: 2px solid #444;
+    border-radius: 4px;
+    background-color: #333;
+    color: #f1f1f1;
+  }
+  #send {
+    width: 6%;
+    height: 40px;
+    position: absolute;
+    right: 0;
+    box-sizing: border-box;
+    border: none;
+    border-radius: 4px;
+    background-color: #009dc4;
+    color: #f1f1f1;
+  }
+  #send:hover {
+    background-color: #0086b3;
+  }
+  #send img {
+    position: relative;
+    width: 100%;
+    top: 5%;
+    height: 80%;
+  }
+  .container {
+    border: 2px solid #dedede;
+    border-radius: 5px;
+    padding: 5px;
+    margin: 10px auto;
+    width: 50%;
+    height: auto;
+  }
+  .Zero {
+    border-color: #555;
+    background-color: #444;
+  }
+  .action {
+    border-color: #0086b3;
+    background-color: #444;
+    font-style: italic;
+    margin: none;
+  }
+  .You {
+    border-color: #444;
+    background-color: #333;
+  }
+  .user_name {
+    font-size: medium;
+  }
+  .container::after {
+    content: "";
+    clear: both;
+    display: table;
+  }
+  

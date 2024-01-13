@@ -23,9 +23,9 @@ class Thread:
 
     def __init__(self, task):
 
-        self.id = uuid.uuid4()
+        self.thread_id = str(uuid.uuid4())
         self.plan = create_plan(task)
-        
+        self.task = task
         self.messages = [
             {
             "role": "system",
@@ -36,28 +36,43 @@ class Thread:
                     research, posting on social media, and online shopping.
                      Your goal is to take the best next action based on
                      the task, the current interactable elements on the page, and the current plan to complete the task. 
-                     You are always to call one of your functions to take an action.
+                     You are always to call one of your functions to take an action. If the task has been completed,
+                     call the "done()" function.
         """
                 }]
         }
         ]
     
-    def get_action(self, prompt, image_url=None, elements=default_elements):
+    def get_action(self, image_url=None, elements=default_elements, prompt=None):
 
+        print("getting action")
         if (image_url != None):
-            self.plan = update_plan(prompt, image_url)
+            print("updating plan")
+            self.plan = update_plan(self.task, image_url)
+            print("plan updated: ", self.plan)
 
-        self.messages.append({
-            "role": "user",
-            "content": [
-                {
-                    "type": "text", 
-                    "text": f"""Task: {prompt}
-                    Plan: {self.plan}
-                    Page Elements: {elements}"""
-                }
-            ]
-        })
+        if (prompt == None):
+            self.messages.append({
+                "role": "user",
+                "content": [
+                    {
+                        "type": "text", 
+                        "text": f"""Task: {self.task}
+                        Plan: {self.plan}
+                        Page Elements: {elements}"""
+                    }
+                ]
+            })
+        else: 
+            self.messages.append({
+                "role": "user",
+                "content": [
+                    {
+                        "type": "text", 
+                        "text": prompt
+                    }
+                ]
+            })
         
         response = Thread.model.chat.completions.create(
             model="gpt-4-1106-preview",
@@ -65,14 +80,10 @@ class Thread:
             tools=Thread.tools,
         )
 
+
         # formats from object to dictionary
-        response = format_output(response.choices[0].message)
+        response = format_output(response.choices[0].message, image_url)
 
-        # if this is the first msg in the thread, then this initiate_task tells client to open a tab
-        if (image_url == None):
-            response["initiate_task"] = True
-        else:
-            response["initiate_task"] = False
+        response['thread_id'] = self.thread_id
 
-        print(response)    
         return response

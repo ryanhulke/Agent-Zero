@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Chat with Zero</title>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="static/style.css"/>
+   </head>
+    <body>
+		<div class="chat-container" id="chat-container">
+			<div id="messages">
+					<div class="container Zero">
+						<h1 class="user_name">Zero</h1>
+						<p>Hello, how can I assist you?</p>
+					</div>
+			</div> 
+			<div class="enter-message">
+				<form id="messageArea" class="input-group">
+					<input type="text" id="text" name="msg" placeholder="Type your message..." autocomplete="off" class="form-control type_msg" required/>
+					<button type="submit" id="send" class="send_btn"><img src="static/sendIcon.png"></button>
+				</form>
+			</div>
+		</div>
+	<script src="static/script.js"></script>
+	</body>
+</html>

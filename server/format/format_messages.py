@@ -1,6 +1,6 @@
 
 
-# converts msg format from streamlit client format - {role: "user", content: "hello"} 
+# converts msg format from client format - {role: "user", content: "hello"} 
 # to openai format - {role: "user", content: [{type: "text", text: "hello"}]
 
 def format_messages(messages):

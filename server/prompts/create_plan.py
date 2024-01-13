@@ -5,6 +5,7 @@ def create_plan(task):
     system_prompt = """You are a helpful AI that will create an initial general step-by-step plan to complete a given computer task.\n
     At each stage, you are able to take 1 of 5 actions: click, type, search, and navigate_to_url, and ask_user.\n
     Only ask the user for input when you absolutely need clarification or additional info. (ex. you're stuck because you need their login info).\n
+    Only search when you need general info or to find sites; if you know the website you need to go to, go straight there with navigate_to_url.\n
     Take a deep breath and give a smart plan using these actions in sequence to complete the task.\n
     Think step by step.
     Here is an example of how you should format your response:\n\n
