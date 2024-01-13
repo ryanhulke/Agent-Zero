@@ -3,26 +3,6 @@ let tabId = 0; // The id of the tab we are automating
 let elements = []; // The elements on the page
 let url = ""; // The url of the page
 
-/*
-chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-  if (request.action === "captureTab") {
-      chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-          chrome.tabs.captureVisibleTab(tabs[0].windowId, {format: 'png'}, function(dataUrl) {
-              if (chrome.runtime.lastError) {
-                  console.error("Capture error:", chrome.runtime.lastError.message);
-                  return;
-              }
-              // Process the captured image Data URL
-              console.log("Captured screenshot:", dataUrl);
-              // You can send it back to popup.js if needed
-              sendResponse({screenshotUrl: dataUrl});
-          });
-      });
-      return true; // Keep the message channel open for asynchronous response
-  }
-});
-*/
-
 
   // when the server sends a message to extension to start a task, open a new tab
 chrome.runtime.onMessage.addListener(({message, sender, sendResponse}) => {
@@ -70,15 +50,18 @@ if (message.type && message.type == "RETURN_ELEMENTS") {
 
               if (changeInfo.status == 'complete' && tab.url == tempURL) {
                 console.log("getting elements: ->");
-                  // Now send the message
+                  // Now send the messa
                   getElements();
               }
             });
         });
       }
-      // if we don't needa openn a new tab, just execute the function using execute.js
   } else {
+
+    // since we don't needa open a new tab, just execute the function on the current tab
     execute(message);
+
+    // once we complete the action (click, type, etc.), get the new elements on the page
     getElements();
   }
 
@@ -87,9 +70,16 @@ if (message.type && message.type == "RETURN_ELEMENTS") {
 function execute(message) {
   console.log("Executing function:", message.function);
   message.type = "EXECUTE";
+
+  // sends message to the content script titled "actionAndGetElements.js"
   chrome.tabs.sendMessage(tabId, message);
 }
 
+/* the getElements function, which gets received in actionAndGetElements.js, sends them in a message
+ back to this background.js file, which sends them to the correct localhost:5000 tab's content script,
+ which sends it to the app client via window.postMessage(). Then the app client can send the 
+ elements/screenshot to the server
+*/
 function getElements() {
   console.log("Getting elements")
   chrome.tabs.sendMessage(tabId, { type: "GET_ELEMENTS" });
