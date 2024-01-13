@@ -2,7 +2,7 @@
 
 ## Description:
 User on the web app sends a computer task to server, server calls the AI and returns the action to take.
-The web app client recieves the action, but currently does nothing with it.
+The web app client recieves the action, sends it to the chrome extension, and the chrome extension executes the action.
 
 
 ## How to run:
