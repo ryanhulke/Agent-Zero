@@ -2,7 +2,7 @@
     "name": "Zero",
     "version": "0.1.0",
     "description": "Browsing the web for you",
-    "permissions": ["activeTab", "tabs", "scripting",  "<all_urls>"],
+    "permissions": ["activeTab", "tabs", "scripting"],
     "host_permissions": [
         "*://*/*"
     ],

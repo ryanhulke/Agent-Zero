@@ -1,4 +1,4 @@
-var current_elements = [];
+let current_elements = [];
 
 chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
     // if its a message from the background script to execute a function
@@ -21,99 +21,133 @@ function takeAction(message) {
       } else if (message.function.name == "search") {
           window.location.href = "https://www.google.com/search?q=" + message.function.arguments.query;
       } else if (message.function.name == "click") {
-          current_elements[message.function.element_id].click();
+          console.log("clicking:", message.function.element_id)
+          console.log(current_elements[parseInt(message.function.element_id)])
+          current_elements[parseInt(message.function.element_id)].click();
       } else if (message.function.name == "type") {
           current_elements[message.function.element_id].value = message.function.arguments.text;
       }
     }
 }
-function getElements() {
+async function getElements() {
+    
       // Get all the elements by the selector
-      const elements = document.querySelectorAll(
-          "a, button, input, textarea, [role=button], [role=treeitem]"
-      );
-      let valid_elements = [];
+    const elements = document.querySelectorAll(
+        "a[href], [onclick], button, input, textarea, [contenteditable=true], [role=button], [role=treeitem], [role=link], [role=tab], [role=menuitem]"
+    );
+    let valid_elements = [];
 
-      function isElementVisible(el) {
-          if (!el) return false; // Element does not exist
-
-          function isStyleVisible(el) {
-              const style = window.getComputedStyle(el);
-              return style.width !== '0' &&
-                    style.height !== '0' &&
-                    style.opacity !== '0' &&
-                    style.display !== 'none' &&
-                    style.visibility !== 'hidden';
-          }
-
-          function isElementInViewport(el) {
-              const rect = el.getBoundingClientRect();
-              return (
-                  rect.top >= 0 &&
-                  rect.left >= 0 &&
-                  rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
-                  rect.right <= (window.innerWidth || document.documentElement.clientWidth)
-              );
-          }
-
+    function isElementVisible(el) {
+        if (!el) return false; // Element does not exist
+        function isStyleVisible(el) {
+            const style = window.getComputedStyle(el);
+            return style.width !== '0' &&
+                style.height !== '0' &&
+                style.opacity !== '0' &&
+                style.display !== 'none' &&
+                style.visibility !== 'hidden';
+        }
+        
           // Check if the element is visible style-wise
-          if (!isStyleVisible(el)) {
-              return false;
-          }
+        if (!isStyleVisible(el)) {
+            return false;
+        }
 
           // Traverse up the DOM and check if any ancestor element is hidden
-          let parent = el;
-          while (parent) {
-              if (!isStyleVisible(parent)) {
-                  return false;
-              }
-              parent = parent.parentElement;
-          }
+        let parent = el;
+        while (parent) {
+            if (!isStyleVisible(parent)) {
+                return false;
+            }
+            parent = parent.parentElement;
+        }
 
-          // Finally, check if the element is within the viewport
-          return isElementInViewport(el);
-      }
+        return true;
+    }
 
-      elements.forEach(e => {
-          const position = e.getBoundingClientRect();
+    elements.forEach(e => {
+        const position = e.getBoundingClientRect();
 
-          if(position.width > 5 && position.height > 5 && isElementVisible(e)) {
-              valid_elements.push(e);
-          }
-      });
+        if(position.width > 5 && position.height > 5 && isElementVisible(e)) {
+            valid_elements.push(e);
+        }
+    });
+    current_elements = valid_elements;
+    console.log("valid elements:",current_elements)
+      // Map to hold element-info pairs
+    const elementInfoMap = new Map();
 
-      current_elements = valid_elements;
-      // turns element objects into one string for the ai
-      let polishedElements = transformElements(valid_elements);
+    valid_elements.forEach(e => {
+        // Extracting relevant information
+        let infoString = "";
 
-      html2canvas(document.body).then(canvas => {
-        var img = canvas.toDataURL("image/png");
-        console.log("screenshot:", img);
-        let data = {elements: polishedElements, type: "RETURN_ELEMENTS", screenshot: img};
-        chrome.runtime.sendMessage({message: data});
-      });
+        let type = e.tagName.toLowerCase();
+        infoString += `Type: ${type}`;
+        let innerText = e.innerText;
+        if (innerText) {
+            infoString +=`, Text: ${innerText}`;
+        }
+        let id = e.id;
+        if (id) {
+            infoString += `, Id: ${id}`;
+        }
+        let ariaLabel = e.getAttribute('aria-label');
+        if (ariaLabel) {
+            infoString += `, AriaLabel: ${ariaLabel}`;
+        }
+        let role = e.getAttribute('role');
+        if (role) {
+            infoString += `, Role: ${role}`;
+        }
+        let href = e.getAttribute('href');
+        if (href) {
+            infoString += `, Href: ${href}`;
+        }
+
+      // Add to map
+      elementInfoMap.set(infoString, e);
+    });
+
+    var startTime = new Date().getTime();
+    captureInBatches(elementInfoMap, 5);
+    var endTime = new Date().getTime();
+    console.log("time to take all screenshots:", endTime - startTime);
+}
+
+async function html2screenshot(element) {
+    let canvas = await html2canvas(element);
+    return canvas.toDataURL();
 }
 
 
-function transformElements(elements) {
-    let combinedElements = "";
-    for (let i = 0; i < elements.length; i++) {
-        let type = elements[i].tagName.toLowerCase();
-        combinedElements += `${i}. Type: ${type}, Text: "${elements[i].textContent.trim()}"`;
-        let role = elements[i].getAttribute('role');
-        if (role) {
-            combinedElements += `, Role: ${role}`;
-        }
-        let href = '';
-        if (type === 'a') {
-            href = elements[i].getAttribute('href');
-        }
-        if (href) {
-            combinedElements += `, Href: ${href}`;
-        }
-        if (i !== elements.length - 1) {
-            combinedElements += "\n";
+async function captureInBatches(elementsMap, batchSize) {
+    var batch = [];
+    var elementsArr = Array.from(elementsMap.entries())
+    for (var i = 0; i < elementsArr.length; i++) {
+        batch.push(elementsArr[i]);
+        var is_last_batch = i === elementsArr.length - 1;
+        if (batch.length === batchSize || is_last_batch) {
+            // Process the current batch
+            
+            await processBatch(batch, is_last_batch);
+            batch = [];
         }
     }
-    return combinedElements;
+}
+
+async function processBatch(batch, is_last_batch) {
+    var canvi = [];
+    var elementsInfo = [];
+    for (const element of batch) {
+        elementsInfo.push(element[0]);
+    }
+    var promises = batch.map(e => html2screenshot(e[1]));
+    var elementImgs = await Promise.all(promises);
+
+    var data = { elements: elementsInfo, type: "RETURN_ELEMENTS", elementImgs: elementImgs, is_last_batch: is_last_batch };
+    if (is_last_batch) {
+        var screenshot = (await html2canvas(document.body)).toDataURL();
+        data.screenshot = screenshot;
+    }
+    chrome.runtime.sendMessage({message: data});
 }

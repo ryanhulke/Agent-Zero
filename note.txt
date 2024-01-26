@@ -1,0 +1,13 @@
+
+idea for element grounding:
+
+collect relevant elements with the following criteria:
+- buttons, a tags, forms?, input, radio, prob some more.
+for each, gather relevant info: aria, onhover or wtvr, and then the text within its child elements
+
+for each element: 
+    send htmltocanvas(element), relevent info and whole screenshot to GPT-4V for descriptions of what it does
+
+note: send each element's request at the same time.
+
+// now each element's description is grounded in its html, and we can send the list of elements like we have been

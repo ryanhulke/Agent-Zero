@@ -14,7 +14,7 @@ window.addEventListener("message", function(event) {
 
 chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
   console.log("Message recived from background, forwarding...");
-  if (message.hasOwnProperty("elements")) {
+  if (message.hasOwnProperty("type") && message.type == "FROM_ZERO") {
     window.postMessage({
       type: "FROM_EXTENSION",
       data: message

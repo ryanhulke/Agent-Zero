@@ -8,10 +8,21 @@ let url = ""; // The url of the page
 chrome.runtime.onMessage.addListener(({message, sender, sendResponse}) => {
   
 if (message.type && message.type == "RETURN_ELEMENTS") {
-  elements = message.elements;
   chrome.tabs.query({url: "http://localhost:5000/"}, function(tabs) {
-    chrome.tabs.sendMessage(tabs[0].id, {elements: message.elements, screenshot: message.screenshot});
+    console.log(message.elements);
+    chrome.tabs.sendMessage(tabs[0].id, {screenshot: message.screenshot, elements: message.elements,
+       type: "FROM_ZERO", elementImgs: message.elementImgs, is_last_batch: message.is_last_batch });
   });
+} else if (message.function.name == "done") {
+  if (message.function.arguments.close_tab == true) {
+    chrome.tabs.remove(tabId);
+  }
+  url = "";
+  elements = [];
+  tabId = 0;
+  chrome.tabs.query({url: "http://localhost:5000/"}, function(tabs) {
+    chrome.tabs.sendMessage(tabs[0].id, {done: true, summary: message.function.arguments.summary});
+});
 } else if (message.initiate_task == true) {
       if (message.function.name == "navigate_to_url") {
         console.log("Navigating to URL:", message.function.arguments.url);
@@ -60,7 +71,6 @@ if (message.type && message.type == "RETURN_ELEMENTS") {
 
     // since we don't needa open a new tab, just execute the function on the current tab
     execute(message);
-
     // once we complete the action (click, type, etc.), get the new elements on the page
     getElements();
   }
