@@ -9,8 +9,6 @@ import os
 # each Thread object represents a task that is being completed
 class Thread:
 
-    # change this to the elements on google home page
-    default_elements = ""
 
     # load all tools from lib folder
     tool_files = [item for item in os.listdir("./lib")]
@@ -26,6 +24,7 @@ class Thread:
         self.thread_id = str(uuid.uuid4())
         self.plan = create_plan(task)
         self.task = task
+        self.current_element_list = ""
         self.messages = [
             {
             "role": "system",
@@ -36,20 +35,23 @@ class Thread:
                     research, posting on social media, and online shopping.
                      Your goal is to take the best next action based on
                      the task, the current interactable elements on the page, and the current plan to complete the task. 
-                     You are always to call one of your functions to take an action. If the task has been completed,
-                     call the "done()" function.
+                     You are always to call one of your functions to take an action. If you are 
+                     currently on a given webpage, DO NOT NAVIGATE TO THAT SAME WEB PAGE YOU ARE ALREADY
+                     ON. If the task has been completed (or if the next step is to close the tab),
+                     call the "done" function
         """
                 }]
         }
         ]
-    
-    def get_action(self, image_url=None, elements=default_elements, prompt=None):
+
+
+    def get_action(self, image_url=None, prompt=None):
 
         print("getting action")
         if (image_url != None):
             print("updating plan")
             self.plan = update_plan(self.task, image_url)
-            print("plan updated: ", self.plan)
+            print(self.plan)
 
         if (prompt == None):
             self.messages.append({
@@ -59,7 +61,7 @@ class Thread:
                         "type": "text", 
                         "text": f"""Task: {self.task}
                         Plan: {self.plan}
-                        Page Elements: {elements}"""
+                        Page Elements: {self.current_element_list}"""
                     }
                 ]
             })
@@ -79,7 +81,6 @@ class Thread:
             messages=self.messages,
             tools=Thread.tools,
         )
-
 
         # formats from object to dictionary
         response = format_output(response.choices[0].message, image_url)

@@ -16,5 +16,4 @@ def format_output(MsgObj, image_url=None):
         output["initiate_task"] = True
     else:
         output["initiate_task"] = False
-    print(output)
     return output

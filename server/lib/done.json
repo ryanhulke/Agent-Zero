@@ -2,12 +2,22 @@
     "type": "function", 
     "function": {
         "name": "done",
-        "description": "The task has been completed, and no further action is needed.",
+        "description": "The task has been completed, and no further action is needed besides closing the tab if it makes sense to. The tab will close if you set your close_tab parameter to true.",
         "parameters": {
         "type": "object",
         "properties": {
+            "summary": {
+                "type": "string",
+                "description": "If the user just asked you to do things, summarize what you did here. If they asked you to gather information in any way, detail that info here."
+                },
+            "close_tab": {
+                "type": "boolean",
+                "description": "If true, the tab will be closed after the task is completed."
+                }
         },
         "required": [
+            "summary",
+            "close_tab"
         ]
         }
     }

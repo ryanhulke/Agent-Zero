@@ -1,9 +1,12 @@
 from aiohttp import web
 from prompts.validate_task import validate_task
 from prompts.general_q import general_q
+from prompts.describe_element import describe_element
 from format.format_messages import format_messages
 from Thread import Thread
-
+import concurrent.futures
+import os
+import base64
 
 # dictionary to store all active threads - key: user_id, value: Thread object
 # once a task is finished, it gets saved to a database and deleted from this dictionary in server RAM
@@ -43,14 +46,39 @@ async def handle_request(request):
         # if the request is from an update from the chrome extension's browser tab
         elif (req_type == 'update'):
             print("update request received")
-            base64_image =request_data.get('messages')[-1].get('screenshot')
-
+            msg = request_data.get('messages')[-1]
             id = request_data.get('thread_id')
+            elements = msg.get('elements')
 
-            elements = request_data.get('messages')[-1].get('elements')
-            action = threads[id].get_action(image_url=base64_image, elements=elements)
+            elementImgs = msg.get('elementImgs')
+            is_last_batch = msg.get('is_last_batch')
 
-            return web.json_response(action)            
+            with concurrent.futures.ThreadPoolExecutor(max_workers=100) as executor:
+            # Submit API calls asynchronously
+                api_futures = [executor.submit(describe_element, desc, img) for desc, img in zip(elements, elementImgs)]
+
+            # Wait for all API calls to complete
+            concurrent.futures.wait(api_futures)
+
+            element_list = ""
+            # Process the results
+            for i, future in enumerate(api_futures):
+                # Retrieve the result of each API call
+                result = future.result()
+                print(result)
+                element_list += str(i) + ". " + result + "\n"
+
+            # add this batch of element descriptions to the thread's current element list
+            threads[id].current_element_list += element_list
+            
+            # if this is the last batch of elements, get the next action
+            if (is_last_batch): 
+                screenshot = msg.get('screenshot')
+                action = threads[id].get_action(image_url=screenshot)
+                return web.json_response(action)
+            else:
+                return web.json_response({"status": "success"})
+            
         elif (req_type == 'task_question_response'):
             id = request_data.get('id')
             prompt = messages[-1]['content'][0]['text']

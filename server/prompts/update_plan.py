@@ -45,5 +45,6 @@ def update_plan(task, base64_image):
         ]
     response = model.chat.completions.create(model="gpt-4-vision-preview", messages=messages)
     plan = response.choices[0].message.content
+    print(plan)
     return plan
     
