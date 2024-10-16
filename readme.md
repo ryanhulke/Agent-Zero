@@ -1,4 +1,4 @@
-### AGENT ZERO
+### WebSurf AI
 
 This experimental project is a web app that works with a chrome extension, to allow AI to control your browser to do basic tasks for you.
 
